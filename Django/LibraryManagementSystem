@@ -1,0 +1,84 @@
+from collections import Counter, defaultdict, OrderedDict, namedtuple, deque
+
+books = namedtuple('books', ['book_id', 'title', 'author'])
+countOfBooks = Counter()
+borrowedBooks = defaultdict(lambda: deque())
+newArrivals = OrderedDict()
+vipRequests = deque()
+
+def addBook(book, count):
+    newArrivals[book.book_id] = [book.title, book.author]
+    countOfBooks[book.book_id] += count
+    print(f"{book.book_id} is added to the library")
+
+def issueBook(userid, bookid):
+    if countOfBooks[bookid] > 0:
+        countOfBooks[bookid] -= 1
+        borrowedBooks[userid].appendleft(bookid)
+        if len(borrowedBooks[userid]) > 3:
+            borrowedBooks[userid].pop()
+        print(f"{bookid} is issued to user with id {userid}")
+    else:
+        print("Book is unavailable")
+
+def return_book(userid, bookid):
+    if bookid in borrowedBooks[userid]:
+        borrowedBooks[userid].remove(bookid)
+        countOfBooks[bookid] += 1
+        print(f"{bookid} is returned")
+
+def vipRequest(userid, bookid):
+    vipRequests.append((userid, bookid))
+    while vipRequests:
+        userid, bookid = vipRequests.popleft()
+        issueBook(userid, bookid)
+
+def displayTopMostBorrowedBooks():
+    d = defaultdict(int)
+    for i in borrowedBooks.values():
+        for j in i:
+            d[j] += 1
+    sortedlist = sorted(d.items(), key=lambda x: x[1], reverse=True)
+    print("Top most borrowed books are: ")
+    print(list(sortedlist)[:2])
+
+def displayBorrowHistory(userid):
+    print(borrowedBooks[userid])
+
+def displaynewArrivalBooks():
+    for bookid, details in newArrivals.items():
+        print(f"{bookid} with {details[0]} is penned by {details[1]}")
+
+# Main program loop
+while True:
+    ch = int(input("Enter an option:\n1.Add a Book\n2.Issue a Book\n3.Return a Book\n4.VIP Request\n5.Display Top Most Borrowed Books\n6.Display Borrow History\n7.Display New Arrivals\n8.Exit\n"))
+    if ch == 1:
+        id = input("Enter book id: ")
+        title = input("Enter Title: ")
+        author = input("Enter author name: ")
+        ct = int(input("Enter number of copies of that book: "))
+        book1 = books(id, title, author)
+        addBook(book1, ct)
+    elif ch == 2:
+        userid = input("Enter user id: ") 
+        bookid = input("Enter book id:") 
+        issueBook(userid, bookid)
+    elif ch == 3:
+        userid = input("Enter user id: ") 
+        bookid = input("Enter book id:") 
+        return_book(userid, bookid)
+    elif ch == 4:
+        userid = input("Enter user id: ") 
+        bookid = input("Enter book id:") 
+        vipRequest(userid, bookid)
+    elif ch == 5:
+        displayTopMostBorrowedBooks()
+    elif ch == 6:
+        userid = input("Enter user id: ")
+        displayBorrowHistory(userid)
+    elif ch == 7:
+        displaynewArrivalBooks()
+    elif ch == 8:
+        break
+    else:
+        print("Enter a valid option")

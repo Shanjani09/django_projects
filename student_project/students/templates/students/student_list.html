@@ -1,0 +1,15 @@
+<html>
+<head>
+    <title>Student List</title>
+</head>
+<body>
+    <h1>Student Records</h1>
+    <a href="{% url 'add_student' %}">Add New Student</a><br>
+    <a href="{% url 'delete_students' %}">delete students</a>
+    <ul>
+        {% for student in students %}
+            <li>{{ student.name }} ({{ student.age }} years old) - {{ student.email }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

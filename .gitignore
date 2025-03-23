@@ -1,0 +1,19 @@
+# Ignore virtual environment
+djangoenv/
+venv/
+.venv/
+
+# Ignore compiled Python files
+_pycache_/
+*.pyc
+*.pyo
+
+# Ignore database files
+db.sqlite3
+
+# Ignore environment variables
+.env
+
+# Ignore system files
+.DS_Store
+Thumbs.db
